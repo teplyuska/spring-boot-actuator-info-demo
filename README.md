@@ -83,3 +83,27 @@ $ jar tvf target/demo-0.0.1-SNAPSHOT.jar | grep BOOT-INF/classes/
 ```
 
 And it seems the git.properties file is also present, but not read when running in the azure image?
+
+## Solution
+
+It seems the additional jar files added by java -cp already contained a git.properties file with information about the additional jar.
+
+    {"git.commit.message.short"="Merged PR 7721155: [ANT101] Merge Dev into Master",, "git.remote.origin.url"="https://msazure.visualstudio.com/One/_git/AAPT-Antares-Websites-Extensions-Java",, "git.dirty"="false",, "git.closest.tag.name"="",, "git.branch"="5d33e9c40fdd4248b64cf6242ae5eeabac44a1c6",, "git.tags"="",, "git.build.time"="2023-03-05T03:43:51+0000",, "git.commit.id.describe-short"="5d33e9c",, "git.closest.tag.commit.count"="",, "git.local.branch.ahead"="NO_REMOTE",, "git.commit.message.full"="Merged PR 7721155: [ANT101] Merge Dev into Master
+    
+    Merged PR 7698940: Add dependency on commons-text 1.10.0 to mitigate CVE-2022-42889
+    
+    Related work items: #17158979",, "git.commit.id.describe"="5d33e9c",, "git.commit.time"="2023-03-05T03:30:25+0000",, "git.total.commit.count"="111", "git.build.version"="1.0",, {=, "git.commit.id"="5d33e9c40fdd4248b64cf6242ae5eeabac44a1c6",, "git.local.branch.behind"="NO_REMOTE",, "git.commit.id.abbrev"="5d33e9c",, }=}
+
+How to find:  
+https://github.com/teplyuska/spring-boot-actuator-info-demo/commit/8fb8ae5da1495bd83045c46bda021d46729adc3d
+
+To solve this I added:
+
+    <generateGitPropertiesFilename>${project.build.outputDirectory}/my-git.properties</generateGitPropertiesFilename>
+
+and
+
+    spring.info.git.location=classpath:my-git.properties
+
+More info:  
+https://github.com/teplyuska/spring-boot-actuator-info-demo/commit/9b42b6d432dfcc982ec5bcc0d5c8e67eca78c0e8
