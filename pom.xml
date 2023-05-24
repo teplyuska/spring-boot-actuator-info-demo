@@ -53,6 +53,7 @@
                 </executions>
                 <configuration>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/my-git.properties</generateGitPropertiesFilename>
                     <includeOnlyProperties>
                         <includeOnlyProperty>git.branch</includeOnlyProperty>
                         <includeOnlyProperty>git.build.time</includeOnlyProperty>
